@@ -1,11 +1,13 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useContext } from "react";
+import { useNavigate } from "react-router-dom";
 import finnhub from "../api/finnhub";
 import { BsFillCaretDownFill } from "react-icons/bs";
 import { BsFillCaretUpFill } from "react-icons/bs";
+import { WatchListContext } from "../context/WatchListContext";
 export const StockList = () => {
-  const [watchList, setWatchList] = useState(["GOOGL", "MSFT", "AMZN"]);
   const [stock, setStock] = useState([]);
-
+  const { watchList } = useContext(WatchListContext);
+  const navigate = useNavigate();
   // -==============use effect  =============================
 
   useEffect(() => {
@@ -29,12 +31,21 @@ export const StockList = () => {
       }
     };
     fetchData();
-  }, []);
+  }, [watchList]);
+
+  const handleStockSelect = (symbol) => {
+    navigate(`detail/${symbol}`);
+  };
 
   const stockMap = stock.map((stockD) => {
     const stockData = stockD.data;
     return (
-      <tr className="table-row" key={stockD.symbol}>
+      <tr
+        style={{ cursor: "pointer" }}
+        onClick={() => handleStockSelect(stockD.symbol)}
+        className="table-row"
+        key={stockD.symbol}
+      >
         <th scope="row">{stockD.symbol}</th>
         <td>{stockData.c}</td>
         <td className={stockData.d > 0 ? "text-success" : "text-danger"}>

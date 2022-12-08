@@ -1,9 +1,10 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useContext } from "react";
 import finnhub from "../api/finnhub";
-
+import { WatchListContext } from "../context/WatchListContext";
 export const AutoComplete = () => {
   const [search, setSearch] = useState("");
   const [results, setResults] = useState([]);
+  const { addStock } = useContext(WatchListContext);
 
   useEffect(() => {
     const fetchData = async () => {
@@ -24,7 +25,11 @@ export const AutoComplete = () => {
 
   const resultsMap = results.map((result) => {
     return (
-      <li className="dropdown-item" key={result.symbol}>
+      <li
+        className="dropdown-item"
+        key={result.symbol}
+        onClick={() => addStock(result.symbol)}
+      >
         {result.description} ({result.symbol})
       </li>
     );
